@@ -1,12 +1,12 @@
 import { Router } from "express";
-import { fs } from "node:fs";
-import { path } from "node:path";
+import fs from "node:fs";
+import path from "node:path";
 import { v4 as uuidv4 } from "uuid";
 
 const router = Router();
 const __dirname = import.meta.dirname;
 let cards = [];
-const file = path.join(__firname, "..", "data", "cards.json");
+const file = path.join(__dirname, "..", "data", "cards.json");
 fs.readFile(file, (error, data) => {
   if (error) {
     console.log(error);

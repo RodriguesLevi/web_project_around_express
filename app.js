@@ -11,10 +11,11 @@ function logger(req, res, next) {
 }
 
 app.use(cors(""));
+app.use(express.json());
 app.use(logger);
 
 app.use("/users", userRouter);
-app.use("/cards", cardsRouterRouter);
+app.use("/cards", cardsRouter);
 
 app.listen(port, () => {
   console.log(`Sever running on http://localhost:${port}`);
