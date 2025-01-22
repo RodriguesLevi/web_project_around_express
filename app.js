@@ -6,7 +6,11 @@ const app = express();
 const port = 3000;
 
 function logger(req, res, next) {
-  console.log(`${new Intl.DateTimeFormat("pt-BR").format(Date.now())}-`);
+  console.log(
+    `${new Intl.DateTimeFormat("pt-BR").format(Date.now())}- ${req.method} - ${
+      req.url
+    }`
+  );
   next();
 }
 
