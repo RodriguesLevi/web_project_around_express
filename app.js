@@ -1,9 +1,16 @@
 import express from "express";
 import cors from "cors";
+import { connectDatabase } from "./data/database.js";
 import { router as userRouter } from "./routes/users.js";
 import { router as cardsRouter } from "./routes/cards.js";
 const app = express();
 const port = 3000;
+
+try {
+  connectDatabase();
+} catch (error) {
+  console.log("Não foi possivel conectar ao database");
+}
 
 function logger(req, res, next) {
   console.log(
