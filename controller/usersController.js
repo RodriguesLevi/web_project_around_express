@@ -4,7 +4,6 @@ import { CustomHttpErrors } from "../errors/CustomHttpErrors.js";
 async function listUser() {
   try {
     const users = await UserModel.find();
-    console.log(users);
 
     return users;
   } catch (error) {
@@ -15,4 +14,17 @@ async function listUser() {
   }
 }
 
-export { listUser };
+async function getUserById(id) {
+  try {
+    const user = await UserModel.findById(id);
+
+    return user;
+  } catch (error) {
+    throw new CustomHttpErrors({
+      message: `Could not find user ${id} in database`,
+      typeError: " [MONGO]- user by id ",
+    });
+  }
+}
+
+export { listUser, getUserById };

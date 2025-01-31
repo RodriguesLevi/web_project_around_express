@@ -1,12 +1,12 @@
 import { Router } from "express";
-import { listUser } from "../controller/usersController.js";
+import { listUser, getUserById } from "../controller/usersController.js";
+import { CustomHttpErrors } from "../errors/CustomHttpErrors.js";
 
 const router = Router();
 
 router.get("/", async (request, response) => {
   try {
     const users = await listUser();
-    console.log(users);
     return response.json(users);
   } catch (error) {
     const { message, statusCode, typeError } = error;
@@ -17,16 +17,24 @@ router.get("/", async (request, response) => {
   }
 });
 
-// router.get("/:_id", (request, response) => {
-//   const { _id } = request.params;
-//   const user = users.find((user) => user._id === _id);
-
-//   if (!user) {
-//     return response
-//       .status(404)
-//       .json({ message: `O usuario com id ${id} não foi encontrado !` });
-//   }
-//   return response.json(user);
-// });
+router.get("/:id", async (request, response) => {
+  const { id } = request.params;
+  try {
+    const user = await getUserById(id);
+    if (!user) {
+      throw new CustomHttpErrors({
+        message: `Could not find user ${id} in database`,
+        typeError: "[GET] - User by id ",
+      });
+    }
+    return response.json(user);
+  } catch (error) {
+    const { message, statusCode, typeError } = error;
+    return response.status(statusCode).json({
+      typeError,
+      message,
+    });
+  }
+});
 
 export { router };
