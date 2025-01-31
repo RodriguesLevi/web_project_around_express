@@ -1,13 +1,20 @@
 import { Router } from "express";
-import { listUser } from "../controller/users";
+import { listUser } from "../controller/usersController.js";
 
 const router = Router();
 
-router.get("/", (request, response) => {
-  if (!users) {
-    return response.status(404).json({ message: `Usuarios não encontrados !` });
+router.get("/", async (request, response) => {
+  try {
+    const users = await listUser();
+    console.log(users);
+    return response.json(users);
+  } catch (error) {
+    const { message, statusCode, typeError } = error;
+    return response.status(statusCode).json({
+      typeError,
+      message,
+    });
   }
-  return response.json(users);
 });
 
 // router.get("/:_id", (request, response) => {
@@ -22,4 +29,4 @@ router.get("/", (request, response) => {
 //   return response.json(user);
 // });
 
-// export { router };
+export { router };
