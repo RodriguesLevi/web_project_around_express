@@ -1,5 +1,9 @@
-import { Router } from "express";
-import { listUser, getUserById } from "../controller/usersController.js";
+import { response, Router } from "express";
+import {
+  listUser,
+  getUserById,
+  createUser,
+} from "../controller/usersController.js";
 import { CustomHttpErrors } from "../errors/CustomHttpErrors.js";
 
 const router = Router();
@@ -28,6 +32,20 @@ router.get("/:id", async (request, response) => {
       });
     }
     return response.json(user);
+  } catch (error) {
+    const { message, statusCode, typeError } = error;
+    return response.status(statusCode).json({
+      typeError,
+      message,
+    });
+  }
+});
+
+router.post("/", async (request, response) => {
+  const body = request.body;
+  try {
+    const newUser = await createUser(body);
+    return response.status(201).json(newUser);
   } catch (error) {
     const { message, statusCode, typeError } = error;
     return response.status(statusCode).json({
