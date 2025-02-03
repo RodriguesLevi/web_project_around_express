@@ -1,8 +1,9 @@
-import { response, Router } from "express";
+import { request, response, Router } from "express";
 import {
   listUser,
   getUserById,
   createUser,
+  updateUser,
 } from "../controller/usersController.js";
 import { CustomHttpErrors } from "../errors/CustomHttpErrors.js";
 
@@ -46,6 +47,21 @@ router.post("/", async (request, response) => {
   try {
     const newUser = await createUser(body);
     return response.status(201).json(newUser);
+  } catch (error) {
+    const { message, statusCode, typeError } = error;
+    return response.status(statusCode).json({
+      typeError,
+      message,
+    });
+  }
+});
+
+router.put("/:id", async (request, response) => {
+  try {
+    const { id } = request.params;
+    const body = request.body;
+    const updatedUser = await updateUser(id, body);
+    return response.status(201).json(updatedUser);
   } catch (error) {
     const { message, statusCode, typeError } = error;
     return response.status(statusCode).json({

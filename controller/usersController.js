@@ -102,36 +102,48 @@ async function createUser(body) {
 //   }
 // }
 
-// async function getUserById(id) {
-//   try {
-//     try {
-//       const { name, about, avatar } = body;
-//       const nameRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ\s'-]+$/;
-//       const aboutRegex = /^[\w\W\s]+$/;
-//       const avatarRegex = /^https?:\/\/[^\s]+\.(?:jpg|jpeg|png|gif|svg)$/;
-//       const isValid =
-//         name.match(nameRegex) &&
-//         about.match(aboutRegex) &&
-//         avatar.match(avatarRegex);
-//       if (!isValid) {
-//         throw new CustomHttpErrors({
-//           message: `Avatar link is invalid, should be a url`,
-//           typeError: " [LINK]-  ERRO ",
-//           statusCode: 422,
-//         });
-//       }
-//       const user = await UserModel.findById(id);
-//       return user
+async function updateUser(id, body) {
+  try {
+    const user = await UserModel.findById(id);
+    if (!user) {
+      throw new CustomHttpErrors({
+        message: `Could not find user ${id}`,
+        typeError: "[GET] - User by id",
+      });
+    }
 
-//       }
+    const { name, about, avatar } = body;
+    const nameRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ\s'-]+$/;
+    const aboutRegex = /^[\w\W\s]+$/;
+    const avatarRegex = /^https?:\/\/[^\s]+\.(?:jpg|jpeg|png|gif|svg)$/;
+    const isValid =
+      name.match(nameRegex) &&
+      about.match(aboutRegex) &&
+      avatar.match(avatarRegex);
+    if (!isValid) {
+      throw new CustomHttpErrors({
+        message: `Avatar link is invalid, should be a url`,
+        typeError: " [LINK]-  ERRO ",
+        statusCode: 422,
+      });
+    }
 
-//     }
-//   catch (error) {
-//     throw new CustomHttpErrors({
-//       message: `Could not find user ${id} in database`,
-//       typeError: " [MONGO]- user by id ",
-//     });
-//   }
-// }
+    const updatedUser = Object.assign(user, { name, about, avatar });
+    await UserModel.findOneAndUpdate({ _id: id }, updatedUser);
 
-export { listUser, getUserById, createUser };
+    return updatedUser;
+  } catch (error) {
+    if (error.statusCode == 422) {
+      throw error;
+    }
+    if (error.statusCode == 404) {
+      throw error;
+    }
+    throw new CustomHttpErrors({
+      message: `Could create new user`,
+      typeError: " [POST]- Invalid user ",
+    });
+  }
+}
+
+export { listUser, getUserById, createUser, updateUser };
