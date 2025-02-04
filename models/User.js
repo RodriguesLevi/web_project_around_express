@@ -1,4 +1,5 @@
 import mongoose, { version } from "mongoose";
+import validator from "validator";
 const userScheme = new mongoose.Schema(
   {
     name: {
@@ -15,6 +16,13 @@ const userScheme = new mongoose.Schema(
     },
     avatar: {
       type: String,
+      required: true,
+      validator: {
+        validator: (v) => {
+          return validator.isURL(v);
+        },
+        message: "link invalido",
+      },
     },
   },
   {

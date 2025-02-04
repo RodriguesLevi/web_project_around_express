@@ -1,11 +1,11 @@
 import { UserModel } from "../models/User.js";
 import { CustomHttpErrors } from "../errors/CustomHttpErrors.js";
 
-async function listUser() {
+async function listUser(req, res) {
   try {
     const users = await UserModel.find();
 
-    return users;
+    return res.status(200).json(users);
   } catch (error) {
     throw new CustomHttpErrors({
       message: "Could not find users",
@@ -14,11 +14,12 @@ async function listUser() {
   }
 }
 
-async function getUserById(id) {
+async function getUserById(req, res) {
+  const { id } = req.params;
   try {
     const user = await UserModel.findById(id);
 
-    return user;
+    return res.status(200).json(user);
   } catch (error) {
     throw new CustomHttpErrors({
       message: `Could not find user ${id} in database`,
@@ -27,27 +28,13 @@ async function getUserById(id) {
   }
 }
 
-async function createUser(body) {
+async function createUser(req, res) {
   try {
-    const { name, about, avatar } = body;
-    const nameRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ\s'-]+$/;
-    const aboutRegex = /^[\w\W\s]+$/;
-    const avatarRegex = /^https?:\/\/[^\s]+\.(?:jpg|jpeg|png|gif|svg)$/;
-    const isValid =
-      name.match(nameRegex) &&
-      about.match(aboutRegex) &&
-      avatar.match(avatarRegex);
-    if (!isValid) {
-      throw new CustomHttpErrors({
-        message: `Avatar link is invalid, should be a url`,
-        typeError: " [LINK]-  ERRO ",
-        statusCode: 422,
-      });
-    }
+    const { name, about, avatar } = req.body;
 
     const newUser = await UserModel({ name, about, avatar });
     const createdUser = await newUser.save();
-    return createdUser;
+    return res.status(201).json(createdUser);
   } catch (error) {
     console.log(error);
     if (error.statusCode == 422) {
@@ -60,8 +47,9 @@ async function createUser(body) {
   }
 }
 
-async function updateUser(id, body) {
+async function updateUser(req, res) {
   try {
+    const { id } = req.params;
     const user = await UserModel.findById(id);
     if (!user) {
       throw new CustomHttpErrors({
@@ -70,26 +58,12 @@ async function updateUser(id, body) {
       });
     }
 
-    const { name, about, avatar } = body;
-    const nameRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ\s'-]+$/;
-    const aboutRegex = /^[\w\W\s]+$/;
-    const avatarRegex = /^https?:\/\/[^\s]+\.(?:jpg|jpeg|png|gif|svg)$/;
-    const isValid =
-      name.match(nameRegex) &&
-      about.match(aboutRegex) &&
-      avatar.match(avatarRegex);
-    if (!isValid) {
-      throw new CustomHttpErrors({
-        message: `Avatar link is invalid, should be a url`,
-        typeError: " [LINK]-  ERRO ",
-        statusCode: 422,
-      });
-    }
+    const { name, about, avatar } = req.body;
 
     const updatedUser = Object.assign(user, { name, about, avatar });
     await UserModel.findOneAndUpdate({ _id: id }, updatedUser);
 
-    return updatedUser;
+    return res.status(200).json(updatedUser);
   } catch (error) {
     if (error.statusCode == 422) {
       throw error;
@@ -104,11 +78,12 @@ async function updateUser(id, body) {
   }
 }
 
-async function deleteUserById(id) {
+async function deleteUserById(req, res) {
+  const { id } = req.params;
   try {
     await UserModel.deleteOne({ _id: id });
 
-    return;
+    return res.status(204).send();
   } catch (error) {
     throw new CustomHttpErrors({
       message: `Could delete user ${id} in database`,

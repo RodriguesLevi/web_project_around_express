@@ -18,6 +18,14 @@ async function connectDatabase() {
 }
 connectDatabase();
 
+app.use((req, res, next) => {
+  req.user = {
+    _id: "679ce63509046fb9a76fc43a", // cole o _id do usuário teste criado no passo anterior
+  };
+
+  next();
+});
+
 function logger(req, res, next) {
   console.log(
     `${new Intl.DateTimeFormat("pt-BR").format(Date.now())}- ${req.method} - ${

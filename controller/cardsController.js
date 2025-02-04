@@ -2,10 +2,10 @@ import { CardModel } from "../models/Card.js";
 import { CustomHttpErrors } from "../errors/CustomHttpErrors.js";
 
 // Listar todos os cards
-async function listCards() {
+async function listCards(req, res) {
   try {
     const cards = await CardModel.find();
-    return cards;
+    return res.status(200).json(cards);
   } catch (error) {
     throw new CustomHttpErrors({
       message: "Could not fetch cards",
@@ -15,19 +15,10 @@ async function listCards() {
 }
 
 // Criar um novo card
-async function createCard(body, userId) {
+async function createCard(req, res) {
+  const { id } = req.params;
   try {
-    const { name, link } = body;
-
-    // Validação do link (deve ser uma URL válida)
-    const linkRegex = /^https?:\/\/[^\s]+\.(?:jpg|jpeg|png|gif|svg)$/;
-    if (!link.match(linkRegex)) {
-      throw new CustomHttpErrors({
-        message: "Invalid link format",
-        typeError: "[POST] - Invalid card link",
-        statusCode: 422,
-      });
-    }
+    const { name, link } = req.body;
 
     // Cria o card com o ID do usuário como proprietário
     const newCard = await CardModel.create({
@@ -49,7 +40,8 @@ async function createCard(body, userId) {
 }
 
 // Deletar um card por ID
-async function deleteCardById(cardId, userId) {
+async function deleteCardById(req, res) {
+  const { cardId } = req.params;
   try {
     const card = await CardModel.findById(cardId);
 
@@ -62,17 +54,8 @@ async function deleteCardById(cardId, userId) {
       });
     }
 
-    // Verifica se o usuário é o proprietário do card
-    if (card.owner.toString() !== userId) {
-      throw new CustomHttpErrors({
-        message: "You are not the owner of this card",
-        typeError: "[DELETE] - Unauthorized",
-        statusCode: 403,
-      });
-    }
-
     await CardModel.deleteOne({ _id: cardId });
-    return;
+    return res.status(204).send();
   } catch (error) {
     if (error.statusCode === 404 || error.statusCode === 403) {
       throw error;
@@ -85,7 +68,9 @@ async function deleteCardById(cardId, userId) {
 }
 
 // Curtir um card
-async function likeCard(cardId, userId) {
+async function likeCard(req, res) {
+  const { cardId } = req.params;
+  const { userId } = req.user._id;
   try {
     const card = await CardModel.findByIdAndUpdate(
       cardId,
@@ -101,7 +86,7 @@ async function likeCard(cardId, userId) {
       });
     }
 
-    return card;
+    return res.status(200).json(card);
   } catch (error) {
     if (error.statusCode === 404) {
       throw error;
@@ -114,7 +99,9 @@ async function likeCard(cardId, userId) {
 }
 
 // Remover curtida de um card
-async function unlikeCard(cardId, userId) {
+async function unlikeCard(req, res) {
+  const { cardId } = req.params;
+  const { userId } = req.user._id;
   try {
     const card = await CardModel.findByIdAndUpdate(
       cardId,
@@ -130,7 +117,7 @@ async function unlikeCard(cardId, userId) {
       });
     }
 
-    return card;
+    return res.status(200).json(card);
   } catch (error) {
     if (error.statusCode === 404) {
       throw error;
