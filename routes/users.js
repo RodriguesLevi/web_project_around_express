@@ -4,6 +4,7 @@ import {
   getUserById,
   createUser,
   updateUser,
+  deleteUserById,
 } from "../controller/usersController.js";
 import { CustomHttpErrors } from "../errors/CustomHttpErrors.js";
 
@@ -62,6 +63,20 @@ router.put("/:id", async (request, response) => {
     const body = request.body;
     const updatedUser = await updateUser(id, body);
     return response.status(201).json(updatedUser);
+  } catch (error) {
+    const { message, statusCode, typeError } = error;
+    return response.status(statusCode).json({
+      typeError,
+      message,
+    });
+  }
+});
+
+router.delete("/:id", async (request, response) => {
+  try {
+    const { id } = request.params;
+    await deleteUserById(id);
+    return response.status(204).json();
   } catch (error) {
     const { message, statusCode, typeError } = error;
     return response.status(statusCode).json({

@@ -60,48 +60,6 @@ async function createUser(body) {
   }
 }
 
-// async function createUser(body) {
-//   try {
-//     const { name, about, avatar } = body;
-
-//     // Verifica se os campos existem e não estão vazios
-//     if (!name || !about || !avatar) {
-//       throw new CustomHttpErrors({
-//         message: "Todos os campos (name, about, avatar) são obrigatórios.",
-//         typeError: "[VALIDATION]-ERRO",
-//         statusCode: 422,
-//       });
-//     }
-
-//     // Expressões regulares para validação
-//     const nameRegex = /^[A-Za-zÀ-ÖØ-öø-ÿ\s'-]+$/;
-//     const aboutRegex = /^[\w\W\s]+$/;
-//     const avatarRegex = /^https?:\/\/[^\s]+\.(?:jpg|jpeg|png|gif|svg)$/;
-
-//     // Valida os campos usando as regex
-//     const isNameValid = name.match(nameRegex);
-//     const isAboutValid = about.match(aboutRegex);
-//     const isAvatarValid = avatar.match(avatarRegex);
-
-//     // Verifica se todos os campos são válidos
-//     if (!isNameValid || !isAboutValid || !isAvatarValid) {
-//       throw new CustomHttpErrors({
-//         message:
-//           "Dados inválidos. Verifique o nome, a descrição e o link do avatar.",
-//         typeError: "[VALIDATION]-ERRO",
-//         statusCode: 422,
-//       });
-//     }
-
-//     // Se tudo estiver válido, continue com a lógica de criação do usuário
-//     console.log("Usuário válido. Criando usuário...");
-//     // ... (sua lógica para criar o usuário)
-//   } catch (error) {
-//     console.error("Erro ao criar usuário:", error);
-//     throw error; // Rejeita a promise para que o chamador possa lidar com o erro
-//   }
-// }
-
 async function updateUser(id, body) {
   try {
     const user = await UserModel.findById(id);
@@ -140,10 +98,23 @@ async function updateUser(id, body) {
       throw error;
     }
     throw new CustomHttpErrors({
-      message: `Could create new user`,
-      typeError: " [POST]- Invalid user ",
+      message: `Could update user`,
+      typeError: " [PUT]- Invalid user ",
     });
   }
 }
 
-export { listUser, getUserById, createUser, updateUser };
+async function deleteUserById(id) {
+  try {
+    await UserModel.deleteOne({ _id: id });
+
+    return;
+  } catch (error) {
+    throw new CustomHttpErrors({
+      message: `Could delete user ${id} in database`,
+      typeError: " [DELETE]- user by id ",
+    });
+  }
+}
+
+export { listUser, getUserById, createUser, updateUser, deleteUserById };
