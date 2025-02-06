@@ -13,7 +13,8 @@ async function connectDatabase() {
     await mongoose.connect("mongodb://localhost:27017/aroundb", {});
     console.log("Database connect !");
   } catch (error) {
-    console.log("error: não foi possivel conectar ao Database !!");
+    console.error("Error connecting to database:", error.message);
+    process.exit(1);
   }
 }
 connectDatabase();
@@ -35,7 +36,7 @@ function logger(req, res, next) {
   next();
 }
 
-app.use(cors(""));
+app.use(cors());
 app.use(express.json());
 app.use(logger);
 
