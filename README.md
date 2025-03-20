@@ -1,19 +1,62 @@
-# Tripleten web_project_around_express
-
-## 📖 Descrição do projeto
-
-Dando continuidade ao projeto Around porem dando inicio ao back-end, desenvolvendo algumas API para o usuario, usando tecnologia como o express.js e postman para validar a api
+# 🌍 Web Project Around Express
+## 📖 Descrição
+Este projeto marca a transição do Around para o back-end, implementando APIs para gerenciar usuários e interações. Utilizamos Express.js para estruturar a aplicação e Postman para validação e testes das APIs.
 
 ## 💻 Tecnologias Utilizadas
-
-- HTML
-- Node.js
-- React.js
-
+Back-end: Node.js, Express.js
+Front-end: React.js
+Banco de Dados: (Se houver, pode adicionar)
+Ferramentas: Postman, Git/GitHub
 ## 🎯 Objetivos do Projeto
+✔ Criar uma plataforma de interação social, permitindo conexões entre usuários, compartilhamento de conteúdos e interatividade.
+✔ Personalização de perfis, possibilitando a alteração de fotos de perfil, adição de novas imagens e edição de nomes de usuário.
+✔ Fomentar engajamento, incluindo funcionalidades como curtidas e comentários para estimular a participação ativa.
 
-Criar uma plataforma de interação social: O objetivo principal é desenvolver um espaço virtual onde os usuários possam se conectar, interagir e compartilhar conteúdo de forma semelhante a uma rede socil
+## 🚀 Como Rodar o Projeto
+#### 1️⃣ Clone o repositório:
 
-Permitir a personalização de perfis: Ao permitir que os usuários alterem suas fotos de perfil, adicionem novas imagens e mudem seus nomes de usuário, o projeto busca oferecer um ambiente mais personalizado e atrativo.
+sh
+Copiar
+Editar
+git clone https://github.com/seu-usuario/nome-do-repositorio.git
+#### 2️⃣ Acesse o diretório do projeto:
 
-Fomentar a participação e o engajamento: As funcionalidades de curtir e comentar, típicas de redes sociais, visam estimular a interação entre os usuários e criar um senso de comunidade.
+sh
+Copiar
+Editar
+cd nome-do-repositorio
+#### 3️⃣ Instale as dependências:
+
+sh
+Copiar
+Editar
+npm install
+#### 4️⃣ Inicie o servidor:
+
+sh
+Copiar
+Editar
+npm run dev
+#### 5️⃣ Teste as rotas da API: Utilize o Postman ou outra ferramenta para validar os endpoints.
+
+## 📂 Estrutura do Projeto
+bash
+Copiar
+Editar
+/src  
+  ├── /routes    # Rotas da API  
+  ├── /controllers # Lógica dos endpoints  
+  ├── /models    # Modelos de dados (se houver)  
+  ├── /middlewares # Middlewares de autenticação e validação  
+  ├── /config    # Configurações do servidor  
+  ├── index.js   # Arquivo principal  
+## 🛠 Futuras Implementações
+##### 🔹 Autenticação JWT para maior segurança
+##### 🔹 Integração com um banco de dados (MongoDB, PostgreSQL, etc.)
+##### 🔹 Melhorias na interface e na experiência do usuário
+
+## 👨‍💻 Autor
+Alisson Rodrigues
+📧 rodrigues101112@gmail.com
+
+
